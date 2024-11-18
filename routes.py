@@ -5,7 +5,34 @@ from database import db
 def init_routes(app):
     @app.route('/vehicle', methods=['GET'])
     def get_vehicles():
-        # get all vehicles
+        """
+        Get all vehicles
+        ---
+        responses:
+          200:
+            description: List of vehicles
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  manufacturer_name:
+                    type: string
+                  description:
+                    type: string
+                  horse_power:
+                    type: integer
+                  model_name:
+                    type: string
+                  model_year:
+                    type: integer
+                  purchase_price:
+                    type: number
+                  fuel_type:
+                    type: string
+                  vin_number:
+                    type: string
+        """
         vehicles = Vehicle.query.all()
         vehicle_list = []
         for vehicle in vehicles:
@@ -16,7 +43,46 @@ def init_routes(app):
 
     @app.route('/vehicle', methods=['POST'])
     def add_vehicle():
-        # add new vehicle
+        """
+        Add new vehicle
+        ---
+        parameters:
+          - in: body
+            name: body
+            required: true
+            schema:
+              type: object
+              required:
+                - manufacturer_name
+                - horse_power
+                - model_name
+                - model_year
+                - purchase_price
+                - fuel_type
+                - vin_number
+              properties:
+                manufacturer_name:
+                  type: string
+                description:
+                  type: string
+                horse_power:
+                  type: integer
+                model_name:
+                  type: string
+                model_year:
+                  type: integer
+                purchase_price:
+                  type: number
+                fuel_type:
+                  type: string
+                vin_number:
+                  type: string
+        responses:
+          201:
+            description: Vehicle created successfully
+          422:
+            description: Missing or invalid data
+        """
         try:
             data = request.get_json()
             vehicle = Vehicle(
@@ -41,7 +107,20 @@ def init_routes(app):
 
     @app.route('/vehicle/<string:vin>', methods=['GET'])
     def get_vehicle(vin):
-        # get vehicle by vin
+        """
+        Get vehicle by VIN
+        ---
+        parameters:
+          - in: path
+            name: vin
+            required: true
+            type: string
+        responses:
+          200:
+            description: Vehicle found
+          404:
+            description: Vehicle not found
+        """
         vehicle = Vehicle.query.filter_by(vin_number=vin.lower()).first()
         if not vehicle:
             return jsonify({"error": "Vehicle not found"}), 404
@@ -49,7 +128,42 @@ def init_routes(app):
 
     @app.route('/vehicle/<string:vin>', methods=['PUT'])
     def update_vehicle(vin):
-        # update vehicle by vin
+        """
+        Update vehicle by VIN
+        ---
+        parameters:
+          - in: path
+            name: vin
+            required: true
+            type: string
+          - in: body
+            name: body
+            required: true
+            schema:
+              type: object
+              properties:
+                manufacturer_name:
+                  type: string
+                description:
+                  type: string
+                horse_power:
+                  type: integer
+                model_name:
+                  type: string
+                model_year:
+                  type: integer
+                purchase_price:
+                  type: number
+                fuel_type:
+                  type: string
+        responses:
+          200:
+            description: Vehicle updated successfully
+          404:
+            description: Vehicle not found
+          422:
+            description: Missing or invalid data
+        """
         vehicle = Vehicle.query.filter_by(vin_number=vin.lower()).first()
         if not vehicle:
             return jsonify({"error": "Vehicle not found"}), 404
@@ -72,7 +186,20 @@ def init_routes(app):
 
     @app.route('/vehicle/<string:vin>', methods=['DELETE'])
     def delete_vehicle(vin):
-        # delete vehicle by vin
+        """
+        Delete vehicle by VIN
+        ---
+        parameters:
+          - in: path
+            name: vin
+            required: true
+            type: string
+        responses:
+          204:
+            description: Vehicle deleted successfully
+          404:
+            description: Vehicle not found
+        """
         vehicle = Vehicle.query.filter_by(vin_number=vin.lower()).first()
         if not vehicle:
             return jsonify({"error": "Vehicle not found"}), 404

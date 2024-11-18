@@ -2,8 +2,11 @@ from flask import Flask
 from database import db
 from schemas import Vehicle
 from routes import init_routes
+from flasgger import Swagger
 
 app = Flask(__name__)
+
+swagger = Swagger(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vehicles.db'
 
