@@ -9,6 +9,8 @@ class Vehicle(db.Model):
   model_year = db.Column(db.Integer)
   purchase_price = db.Column(db.Float)
   fuel_type = db.Column(db.String(20))
+  color = db.Column(db.String(20))
+  vehicle_type = db.Column(db.String(20))
 
   def to_dictionary(self):
     return {
@@ -19,5 +21,15 @@ class Vehicle(db.Model):
       "model_name": self.model_name, 
       "model_year": self.model_year,
       "purchase_price": self.purchase_price,
-      "fuel_type": self.fuel_type
+      "fuel_type": self.fuel_type,
+      "color": self.color,
+      "vehicle_type": self.vehicle_type
     }
+  
+class SoldVehicles(db.Model):
+  vin_number = db.Column(db.String(17), primary_key = True)
+  purchase_price = db.Column(db.Float)
+  new_owner = db.Column(db.String(50))
+  seller = db.Column(db.String(50))
+
+

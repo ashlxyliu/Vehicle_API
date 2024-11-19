@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from schemas import Vehicle
+from schemas import Vehicle, SoldVehicles
 from database import db
 
 def init_routes(app):
@@ -94,6 +94,8 @@ def init_routes(app):
                 purchase_price=data['purchase_price'],
                 fuel_type=data['fuel_type'],
                 vin_number=data['vin_number'].lower()
+                color = data['color'],
+                vehicle_type=data['vehicle_type']
             )
             db.session.add(vehicle)
             db.session.commit()
@@ -177,6 +179,8 @@ def init_routes(app):
             vehicle.model_year = data['model_year']
             vehicle.purchase_price = data['purchase_price']
             vehicle.fuel_type = data['fuel_type']
+            vehicle.color = data['color']
+            vehicle.vehicle_type = data['vehicle_type']
             db.session.commit()
             return jsonify(vehicle.to_dictionary()), 200
         except KeyError as e:
@@ -207,3 +211,20 @@ def init_routes(app):
         db.session.delete(vehicle)
         db.session.commit()
         return '', 204
+
+    @app.route('/vehicle', methods=['GET'])
+    def get_sold_vehicles():
+        vehicle = Vehicle.query.first()
+        sold_vehicles = SoldVehicles.query.first()
+        vin_numbers = []
+        for i in vehicle:
+            vin_numbers.append(i.vin)
+        
+        sold = []
+        for i in sold_vehicles:
+            if i.vin in vin_numbers:
+                sold.append(i)
+
+        return sold
+                
+                
