@@ -93,7 +93,7 @@ def init_routes(app):
                 model_year=data['model_year'],
                 purchase_price=data['purchase_price'],
                 fuel_type=data['fuel_type'],
-                vin_number=data['vin_number'].lower()
+                vin_number=data['vin_number'].lower(),
                 color = data['color'],
                 vehicle_type=data['vehicle_type']
             )
@@ -212,13 +212,13 @@ def init_routes(app):
         db.session.commit()
         return '', 204
 
-    @app.route('/vehicle', methods=['GET'])
+    @app.route('/sold-vehicles', methods=['GET'])
     def get_sold_vehicles():
-        vehicle = Vehicle.query.first()
-        sold_vehicles = SoldVehicles.query.first()
-        vin_numbers = []
-        for i in vehicle:
-            vin_numbers.append(i.vin)
+        vehicles = Vehicle.query.all()
+        sold_vehicles = SoldVehicles.query.all()
+        vin_numbers = set()
+        for i in vehicles:
+            vin_numbers.add(i.vin_number)
         
         sold = []
         for i in sold_vehicles:
